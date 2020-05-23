@@ -8,7 +8,6 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
 
   // Set the network port
   const port = process.env.PORT || 8082;
-  console.log("Port: ", process.env.PORT);
 
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
@@ -32,10 +31,8 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
     if (!image_url) {
       return res.status(400).send("Did not provide an image_url!");
     }
-    console.log("Url recieved: ", image_url);
     return filterImageFromURL(image_url)
       .then((temp_path) => {
-        console.log(`Got the converted image at ${temp_path}`);
         res.status(200).sendFile(temp_path);
         return res.on("finish", () => deleteLocalFiles([temp_path]));
       })
