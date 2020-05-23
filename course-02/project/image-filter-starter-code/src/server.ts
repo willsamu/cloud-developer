@@ -33,10 +33,13 @@ import { filterImageFromURL, deleteLocalFiles } from "./util/util";
       return res.status(400).send("Did not provide an imageUrl!");
     }
     console.log("Url recieved: ", image_url);
-    const temp_path = await filterImageFromURL(image_url);
-    console.log(`Got the converted image at ${temp_path}`);
-    res.status(200).sendFile(temp_path);
-    return res.on("finish", () => deleteLocalFiles([temp_path]));
+    return filterImageFromURL(image_url)
+      .then((temp_path) => {
+        console.log(`Got the converted image at ${temp_path}`);
+        res.status(200).sendFile(temp_path);
+        return res.on("finish", () => deleteLocalFiles([temp_path]));
+      })
+      .catch(() => res.status(422).send("No image found at given url.."));
   });
 
   /**************************************************************************** */
